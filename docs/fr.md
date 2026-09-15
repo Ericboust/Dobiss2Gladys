@@ -1,43 +1,9 @@
-# Template de démonstration
+# Dobiss2Gladys
 
-Ceci est la documentation utilisateur de l'intégration. Gladys ré-héberge ce
-fichier et affiche un lien **Documentation** permanent vers lui dans l'écran
-de configuration (dans la langue de l'utilisateur, avec l'anglais en repli) —
-c'est au moment de configurer que l'utilisateur en a le plus besoin. Gardez
-les courtes indications d'accueil dans les blocs `section` du `config_schema`
-du manifest ; mettez ici le pas-à-pas détaillé (captures d'écran, dépannage…).
+Dobiss2Gladys est une intégration externe pour Gladys Assistant permettant de piloter un système domotique Dobiss depuis Gladys. Elle est pensée principalement pour le contrôle de l'éclairage, mais peut aussi exposer et synchroniser d'autres circuits électriques Dobiss compatibles disponibles sur le contrôleur.
 
-## Ce que vous obtenez
+L'intégration s'exécute dans un conteneur Docker et se connecte au contrôleur Dobiss MAX200 sur le réseau local à l'aide de son adresse IP et de son port. Une fois configurée dans Gladys Assistant, elle peut découvrir les équipements pris en charge et les rendre disponibles dans Gladys pour le pilotage, les scènes, les tableaux de bord et les automatismes.
 
-Six appareils de démonstration apparaissent après l'installation : une
-station météo (vraies données Open-Meteo), un interrupteur, une lampe
-variable, une prise connectée avec mesure de puissance, un détecteur de
-mouvement et une caméra.
+Pour l'utiliser, il faut une version récente de Gladys Assistant, un contrôleur Dobiss accessible sur le réseau local, ainsi que ses paramètres réseau. Un exemple courant est un contrôleur joignable à l'adresse `192.168.1.50` sur le port `10001`. Après installation, il suffit de renseigner l'IP et le port dans l'écran de configuration, d'enregistrer, puis de lancer la découverte si nécessaire.
 
-## Configuration
-
-1. Ouvrez l'onglet **Configuration** de l'intégration.
-2. Renseignez la **latitude** et la **longitude** que la station météo de
-   démonstration doit observer (Paris par défaut), et choisissez votre unité
-   de température.
-3. Enregistrez : les appareils apparaissent dans l'onglet **Découverte**,
-   prêts à être ajoutés.
-
-Le réglage **Préférer la connexion locale** pilote la prise de
-démonstration : elle affiche en badge le canal réellement utilisé (local ou
-cloud), avec un point orange quand elle fonctionne en mode dégradé (local
-refusé, bascule cloud).
-
-## Actions
-
-- **Tester le fournisseur météo** — effectue une requête en direct vers
-  Open-Meteo et affiche la température et l'humidité actuelles sous le
-  bouton.
-- **Identifier un appareil** — choisissez un de vos appareils dans la liste
-  et il se signale (la lampe de démonstration « clignote » dans les logs).
-
-## Dépannage
-
-L'intégration journalise tout ce qu'elle fait : consultez les logs de
-l'intégration depuis l'interface Gladys (ou `docker logs` sur l'hôte) avec
-`LOG_LEVEL=debug` pour le détail complet.
+Dobiss2Gladys a pour objectif d'offrir un pont simple et propre entre une installation Dobiss existante et Gladys Assistant, sans modifier le cœur de Gladys, via le mécanisme officiel d'intégrations externes packagées.

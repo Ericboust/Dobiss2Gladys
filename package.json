@@ -1,5 +1,5 @@
 {
-  "name": "gladys-integration-template-js",
+  "name": "dobiss2gladys",
   "version": "1.0.0",
   "private": true,
   "description": "Official starter template to build an external integration for Gladys Assistant with the JavaScript SDK.",
