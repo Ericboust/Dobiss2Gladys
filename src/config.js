@@ -25,11 +25,10 @@ const DEFAULT_CONFIG = {
  * reçue dans onConfigUpdated(config).
  */
 function normalizeConfig(rawConfig = {}) {
-  const host = typeof rawConfig.host === "string" ? rawConfig.host.trim() : "";
+  const host = typeof rawConfig.host === 'string' ? rawConfig.host.trim() : '';
 
   const parsedPort = Number(rawConfig.port);
-  const port =
-    Number.isFinite(parsedPort) && parsedPort > 0 ? parsedPort : DEFAULT_PORT;
+  const port = Number.isFinite(parsedPort) && parsedPort > 0 ? parsedPort : DEFAULT_PORT;
 
   return { host, port };
 }
