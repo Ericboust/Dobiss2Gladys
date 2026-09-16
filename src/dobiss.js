@@ -1,4 +1,4 @@
-import net from "net";
+import net from 'net';
 
 /**
  * Protocole TCP Dobiss MAX200 (gamme SX Evolution) - on/off uniquement.
@@ -28,13 +28,10 @@ import net from "net";
  */
 
 const ACTION_HEADER = Buffer.from([
-  0xed, 0x43, 0x31, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xaf, 0xaf,
+  0xed, 0x43, 0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xaf, 0xaf,
 ]);
 
-const STATUS_HEADER = Buffer.from([
-  0xed, 0x63, 0x30, ...Array(11).fill(0xff), 0xaf, 0xaf,
-]);
+const STATUS_HEADER = Buffer.from([0xed, 0x63, 0x30, ...Array(11).fill(0xff), 0xaf, 0xaf]);
 
 export const ACTION = {
   OFF: 0x00,
@@ -73,7 +70,7 @@ export function sendAction(host, port, moduleLetter, output, action, timeoutMs =
       timeoutMs,
     );
 
-    socket.once("error", (err) => finish(reject, err));
+    socket.once('error', (err) => finish(reject, err));
 
     socket.connect(port, host, () => {
       const addr = moduleLetterToAddress(moduleLetter);
@@ -99,7 +96,7 @@ export function readStatusBatch(host, port, items, timeoutMs = 3000) {
       return;
     }
     if (items.length > 24) {
-      reject(new Error("readStatusBatch: 24 items maximum par appel"));
+      reject(new Error('readStatusBatch: 24 items maximum par appel'));
       return;
     }
 
@@ -120,9 +117,9 @@ export function readStatusBatch(host, port, items, timeoutMs = 3000) {
       timeoutMs,
     );
 
-    socket.once("error", (err) => finish(reject, err));
+    socket.once('error', (err) => finish(reject, err));
 
-    socket.on("data", (chunk) => {
+    socket.on('data', (chunk) => {
       received = Buffer.concat([received, chunk]);
       if (received.length >= items.length) {
         finish(resolve, received.subarray(0, items.length));

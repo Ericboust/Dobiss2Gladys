@@ -31,10 +31,10 @@ L'intégration tourne dans un conteneur Docker isolé, se connecte au contrôleu
 
 ## Configuration
 
-| Champ | Description |
-|---|---|
+| Champ  | Description                                         |
+| ------ | --------------------------------------------------- |
 | `host` | Adresse IP du contrôleur Dobiss sur le réseau local |
-| `port` | Port de communication du contrôleur Dobiss |
+| `port` | Port de communication du contrôleur Dobiss          |
 
 ## Développement local
 
