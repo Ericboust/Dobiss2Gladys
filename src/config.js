@@ -14,15 +14,22 @@
 
 const DEFAULT_PORT = 10001;
 
+// Valeurs par défaut, tenues en phase avec les `default` du config_schema
+// dans gladys-assistant-integration.json (voir test/manifest.test.js).
+const DEFAULT_CONFIG = {
+  port: DEFAULT_PORT,
+};
+
 /**
  * Normalise et valide la config brute renvoyée par gladys.getConfig() /
  * reçue dans onConfigUpdated(config).
  */
 function normalizeConfig(rawConfig = {}) {
-  const host = typeof rawConfig.host === 'string' ? rawConfig.host.trim() : '';
+  const host = typeof rawConfig.host === "string" ? rawConfig.host.trim() : "";
 
   const parsedPort = Number(rawConfig.port);
-  const port = Number.isFinite(parsedPort) && parsedPort > 0 ? parsedPort : DEFAULT_PORT;
+  const port =
+    Number.isFinite(parsedPort) && parsedPort > 0 ? parsedPort : DEFAULT_PORT;
 
   return { host, port };
 }
@@ -34,4 +41,4 @@ function isConfigValid(config) {
   return Boolean(config && config.host);
 }
 
-export { normalizeConfig, isConfigValid, DEFAULT_PORT };
+export { normalizeConfig, isConfigValid, DEFAULT_PORT, DEFAULT_CONFIG };

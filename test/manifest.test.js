@@ -2,26 +2,26 @@
 // Consistency checks between `gladys-assistant-integration.json` and the code.
 // The manifest is validated by the store indexer, but nothing there can know
 // which handlers the code actually registers — these tests keep both in sync.
+//
+// Adapted from the official template for Dobiss2Gladys: this integration has
+// no `src/devices/` blueprint registry (a single onScanRequest handler in
+// index.js covers every Dobiss output) and no dynamic select field, so the
+// template's tests for those two features were removed rather than faked.
 // -----------------------------------------------------------------------------
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { DEVICE_BLUEPRINTS } from '../src/devices/index.js';
 import { DEFAULT_CONFIG } from '../src/config.js';
 
 const manifest = JSON.parse(
   await readFile(new URL('../gladys-assistant-integration.json', import.meta.url), 'utf8'),
 );
 
-// Actions registered outside the blueprints (see index.js).
-const REGISTRY_LEVEL_ACTIONS = ['identify'];
-
 test('every manifest action has a registered handler', () => {
-  const handled = new Set([
-    ...DEVICE_BLUEPRINTS.flatMap((bp) => Object.keys(bp.actions ?? {})),
-    ...REGISTRY_LEVEL_ACTIONS,
-  ]);
+  // Dobiss2Gladys declares no `actions` field in its manifest, so this list
+  // stays empty; kept as a guard for the day an action button is added.
+  const handled = new Set([]);
   for (const action of manifest.actions ?? []) {
     assert.ok(handled.has(action.key), `manifest action "${action.key}" has no handler`);
   }
@@ -57,7 +57,7 @@ test('config_schema defaults stay consistent with DEFAULT_CONFIG', () => {
 
 test('section fields are purely presentational', () => {
   const sections = manifest.config_schema.filter((f) => f.type === 'section');
-  assert.ok(sections.length > 0, 'the template demonstrates at least one section block');
+  assert.ok(sections.length > 0, 'the manifest declares at least one intro section block');
   for (const section of sections) {
     // A section stores NO value: declaring `required`, `default` or
     // `placeholder` on it rejects the manifest, and its key must never leak
@@ -80,19 +80,10 @@ test('section fields are purely presentational', () => {
   }
 });
 
-test('dynamic selects declare a source and no static options', () => {
-  const allFields = [
-    ...manifest.config_schema,
-    ...(manifest.actions ?? []).flatMap((a) => a.fields ?? []),
-  ];
-  const dynamicSelects = allFields.filter((f) => f.source !== undefined);
-  assert.ok(dynamicSelects.length > 0, 'the template demonstrates a dynamic select');
-  for (const field of dynamicSelects) {
-    assert.equal(field.source, 'devices', 'the only core-defined source in V1 is "devices"');
-    assert.equal(
-      field.options,
-      undefined,
-      `field "${field.key}": declaring source and options together rejects the manifest`,
-    );
-  }
+test('host and port are the only required config fields', () => {
+  const requiredKeys = manifest.config_schema
+    .filter((f) => f.required)
+    .map((f) => f.key)
+    .sort();
+  assert.deepEqual(requiredKeys, ['host', 'port']);
 });
