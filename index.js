@@ -1,186 +1,149 @@
-// -----------------------------------------------------------------------------
-// Entry point of the Gladys external integration.
+// index.js
 //
-// Role of this file: wire the SDK to the device catalog (src/devices/). It holds
-// NO hardware logic: all the control "work" lives in the device modules. This
-// file only:
-//   1. instantiates the SDK (connection, auth, reconnection: handled for you);
-//   2. registers the event handlers BEFORE connect();
-//   3. connects and publishes the discovered devices.
+// Branchement SDK Gladys <-> pilote Dobiss (src/dobiss.js).
 //
-// Environment variables provided by the Gladys supervisor to the container:
-//   - GLADYS_HOST_API_URL         (host API URL)
-//   - GLADYS_INTEGRATION_TOKEN    (integration-scoped JWT)
-//   - GLADYS_INTEGRATION_SELECTOR (integration identifier)
-// The SDK reads them automatically: `new GladysIntegration()` is enough.
-// -----------------------------------------------------------------------------
+// Le protocole Dobiss n'a pas de "discovery" native : readStatusBatch()
+// répond 0xFF pour un emplacement de sortie inexistant. On s'en sert donc
+// pour balayer les 18 modules possibles (lettres A à R) et détecter les
+// sorties réellement présentes.
 
-import { GladysIntegration, logger } from '@gladysassistant/integration-sdk';
-import { normalizeConfig } from './src/config.js';
 import {
-  DEVICE_BLUEPRINTS,
-  buildDiscoveredDevices,
-  buildTransportEntries,
-  findBlueprintByDevice,
-  identifyDevice,
-} from './src/devices/index.js';
+  GladysIntegration,
+  DEVICE_FEATURE_CATEGORIES,
+  DEVICE_FEATURE_TYPES,
+  logger,
+} from "@gladysassistant/integration-sdk";
+
+import { normalizeConfig, isConfigValid } from "./src/config.js";
+import { ACTION, sendAction, readStatusBatch } from "./src/dobiss.js";
+
+// Lettres de module valides : A (module 1) à R (module 18).
+const MODULE_LETTERS = Array.from({ length: 18 }, (_, i) =>
+  String.fromCharCode(65 + i),
+);
+
+// readStatusBatch accepte jusqu'à 24 items par appel : on balaie donc,
+// pour chaque module, les sorties 0 à 23 en un seul appel.
+const OUTPUTS_PER_SCAN = 24;
 
 const gladys = new GladysIntegration();
 
-// Current configuration (hot-reloaded via onConfigUpdated).
-let config = normalizeConfig();
+let config = normalizeConfig(await gladys.getConfig());
 
-// Cleanup functions for the "push" subscriptions (e.g. the motion sensor).
-let pushCleanups = [];
+/**
+ * Construit l'external_id d'une sortie à partir de sa lettre de module et
+ * de son index, et inversement retrouve (moduleLetter, output) à partir
+ * d'un device Gladys.
+ */
+function outputPlatformId(moduleLetter, output) {
+  return `${moduleLetter}${output}`;
+}
 
-// --- Discovery: Gladys asks for the list of devices --------------------------
+function getDeviceOutput(device) {
+  const moduleLetter = device.params?.find(
+    (p) => p.name === "MODULE_LETTER",
+  )?.value;
+  const output = Number(
+    device.params?.find((p) => p.name === "OUTPUT_INDEX")?.value,
+  );
+  return { moduleLetter, output };
+}
+
+// --- Découverte : balayage de tous les modules/sorties ---------------------
 gladys.onScanRequest(async () => {
-  logger.info('onScanRequest -> publishing discovered devices');
-  await gladys.publishDiscoveredDevices(buildDiscoveredDevices(gladys, config));
-});
-
-// --- Command: the user acts on a controllable feature ------------------------
-gladys.onSetValue(async (device, feature, value) => {
-  logger.info(`onSetValue <- ${feature.external_id} = ${value}`);
-  const blueprint = findBlueprintByDevice(gladys, device);
-  if (!blueprint || typeof blueprint.onSetValue !== 'function') {
-    // Throw: the SDK sends a success:false acknowledgement to Gladys.
-    throw new Error(`No command handler for ${device.external_id}`);
-  }
-  await blueprint.onSetValue(gladys, { device, feature, value, config });
-});
-
-// --- Camera: Gladys needs a FRESH image of a camera device -------------------
-// Triggered by the dashboard live view or a chat intent. The resolved
-// `image/jpg;base64,...` string (≤ 150 KB) is acked back to Gladys; the ack is
-// awaited under 15 s (not the usual 5 s), so a real capture fits.
-gladys.onGetImage(async (device) => {
-  logger.info(`onGetImage <- ${device.external_id}`);
-  const blueprint = findBlueprintByDevice(gladys, device);
-  if (!blueprint || typeof blueprint.onGetImage !== 'function') {
-    throw new Error(`No camera handler for ${device.external_id}`);
-  }
-  return blueprint.onGetImage(gladys, { device, config });
-});
-
-// --- Polling: Gladys asks to refresh a device --------------------------------
-gladys.onPoll(async (device) => {
-  const blueprint = findBlueprintByDevice(gladys, device);
-  if (!blueprint || typeof blueprint.onPoll !== 'function') {
-    logger.debug(`onPoll ignored (no polling) for ${device.external_id}`);
+  if (!isConfigValid(config)) {
+    logger.warn("Config Dobiss incomplète (host manquant), scan annulé.");
     return;
   }
-  await blueprint.onPoll(gladys, config);
-});
 
-// --- Manifest actions: buttons in the Configuration screen -------------------
-// Each action declared in the `actions` field of the manifest is registered
-// per key; the message resolved by the handler is displayed under the button
-// (the ack is awaited under the action's `timeout_seconds`, not the usual 5 s).
-for (const blueprint of DEVICE_BLUEPRINTS) {
-  for (const [actionKey, handler] of Object.entries(blueprint.actions ?? {})) {
-    gladys.onAction(actionKey, (fields) => handler(gladys, { fields, config }));
-  }
-}
+  const devices = [];
 
-// The `identify` action targets ONE device chosen by the user, so it is not
-// owned by a single blueprint. Its manifest field declares
-// `"source": "devices"` (SDK v0.7+): instead of static `options`, the
-// Configuration screen fills the select with the integration's own created
-// devices, and the handler receives the chosen external_id as a field value.
-gladys.onAction('identify', (fields) => {
-  logger.info(`Action identify <- ${fields.device}`);
-  return identifyDevice(gladys, fields.device, config);
-});
+  for (const moduleLetter of MODULE_LETTERS) {
+    const items = Array.from({ length: OUTPUTS_PER_SCAN }, (_, output) => ({
+      moduleLetter,
+      output,
+    }));
 
-// --- Configuration updated by the user ---------------------------------------
-gladys.onConfigUpdated(async (newConfig) => {
-  logger.info('onConfigUpdated -> new configuration received');
-  config = normalizeConfig(newConfig);
-  // Re-publish the devices: some properties (unit, frequency) depend on it.
-  // publishDiscoveredDevices is idempotent (upsert by external_id).
-  await gladys.publishDiscoveredDevices(buildDiscoveredDevices(gladys, config));
-  // The reserved GLADYS_PREFER_LOCAL key arrives here like any other key:
-  // re-route the dual-channel devices, then reflect the ACTUAL outcome.
-  await publishDeviceTransports();
-});
-
-// --- Connection lifecycle ----------------------------------------------------
-// The SDK itself logs the WebSocket lifecycle (connections, disconnections,
-// reconnection attempts) under the `gladys-sdk` name: no need to log it again
-// here, these handlers only run the integration's own (re)initialization.
-gladys.on('connected', async () => {
-  try {
-    // 1) Fetch the config filled in by the user.
-    config = normalizeConfig(await gladys.getConfig());
-
-    // 2) (Re)publish all devices as soon as we are connected.
-    await gladys.publishDiscoveredDevices(buildDiscoveredDevices(gladys, config));
-
-    // 3) Publish the per-device transport badge (cloud/local, dual-channel
-    // devices only). Lightweight channel: on a live switch, call it again
-    // without re-publishing the devices.
-    await publishDeviceTransports();
-
-    // 4) Start the real-time subscriptions ("push" sensors, camera snapshots).
-    stopPushSubscriptions();
-    pushCleanups = DEVICE_BLUEPRINTS.filter((bp) => typeof bp.startPush === 'function').map((bp) =>
-      bp.startPush(gladys, config),
-    );
-
-    // 5) Report the application-level status, shown in the Configuration
-    // screen. Distinct from the container state machine: an integration can
-    // be RUNNING and still disconnected from its third-party service.
-    await gladys.setConnectionStatus(true);
-  } catch (err) {
-    logger.error('Post-connection initialization failed', err);
-    await gladys
-      .setConnectionStatus(false, {
-        en: 'Initialization failed, check the integration logs.',
-        fr: "L'initialisation a échoué, consultez les logs de l'intégration.",
-      })
-      .catch(() => {});
-  }
-});
-
-gladys.on('disconnected', () => {
-  stopPushSubscriptions();
-});
-
-// Publish the effective transport of every dual-channel device
-// ('local' | 'cloud' | 'unreachable'), rendered as a badge in the Gladys UI.
-// An entry can also flag a degraded state (`{ degraded: true, message }`,
-// SDK v0.7+): the badge keeps its transport color plus an orange dot, and the
-// tooltip shows the reason — see src/devices/plug.js.
-async function publishDeviceTransports() {
-  const entries = buildTransportEntries(gladys, config);
-  if (entries.length > 0) {
-    await gladys.publishTransports(entries);
-  }
-}
-
-function stopPushSubscriptions() {
-  for (const cleanup of pushCleanups) {
+    let statuses;
     try {
-      cleanup?.();
+      statuses = await readStatusBatch(config.host, config.port, items);
     } catch (err) {
-      logger.error('Push subscription cleanup failed', err);
+      logger.warn(
+        `Module ${moduleLetter} injoignable pendant le scan: ${err.message}`,
+      );
+      continue; // on continue le balayage même si un module ne répond pas
     }
+
+    statuses.forEach((state, output) => {
+      if (state === 0xff) return; // emplacement inutilisé
+
+      const ids = gladys.externalIds(
+        "dobiss-output",
+        outputPlatformId(moduleLetter, output),
+      );
+      devices.push({
+        name: `Dobiss ${moduleLetter}${output}`,
+        external_id: ids.device,
+        params: [
+          { name: "MODULE_LETTER", value: moduleLetter },
+          { name: "OUTPUT_INDEX", value: String(output) },
+        ],
+        features: [
+          {
+            name: "On/Off",
+            external_id: ids.feature("binary"),
+            category: DEVICE_FEATURE_CATEGORIES.SWITCH,
+            type: DEVICE_FEATURE_TYPES.SWITCH.BINARY,
+            min: 0,
+            max: 1,
+            read_only: false,
+            has_feedback: true,
+            keep_history: true,
+            should_poll: true,
+            poll_frequency: 30,
+          },
+        ],
+      });
+    });
   }
-  pushCleanups = [];
-}
 
-// --- Graceful shutdown -------------------------------------------------------
-// The SDK stops the push subscriptions, disconnects cleanly and exits with
-// code 0 when the supervisor stops the container (SIGTERM/SIGINT).
-gladys.handleShutdown((signal) => {
-  logger.info(`Received ${signal} -> graceful shutdown`);
-  stopPushSubscriptions();
+  logger.info(`Scan terminé : ${devices.length} sortie(s) Dobiss détectée(s).`);
+  await gladys.publishDiscoveredDevices(devices);
 });
 
-// --- Startup -----------------------------------------------------------------
-logger.info('Starting the template integration...');
-gladys.connect().catch((err) => {
-  logger.error('Initial connection failed', err);
-  process.exit(1);
+// --- Commande : l'utilisateur allume/éteint depuis Gladys -------------------
+gladys.onSetValue(async (device, feature, value) => {
+  const { moduleLetter, output } = getDeviceOutput(device);
+  if (!moduleLetter || Number.isNaN(output)) {
+    throw new Error(`Device Dobiss mal formé: ${device.external_id}`);
+  }
+
+  const action = value ? ACTION.ON : ACTION.OFF;
+  await sendAction(config.host, config.port, moduleLetter, output, action);
+  await gladys.publishState(feature.external_id, value);
 });
+
+// --- Lecture périodique de l'état réel (une sortie à la fois) --------------
+gladys.onPoll(async (device, feature) => {
+  const { moduleLetter, output } = getDeviceOutput(device);
+  if (!moduleLetter || Number.isNaN(output)) return;
+
+  const [state] = await readStatusBatch(config.host, config.port, [
+    { moduleLetter, output },
+  ]);
+  if (state === undefined || state === 0xff) return;
+
+  await gladys.publishState(feature.external_id, state);
+});
+
+// --- Configuration ------------------------------------------------------------
+gladys.onConfigUpdated(async (rawConfig) => {
+  config = normalizeConfig(rawConfig);
+  logger.info("Configuration Dobiss mise à jour", config);
+  await gladys.setConnectionStatus(isConfigValid(config));
+});
+
+gladys.handleShutdown();
+
+await gladys.connect();
+await gladys.setConnectionStatus(isConfigValid(config));
