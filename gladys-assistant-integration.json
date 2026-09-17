@@ -6,11 +6,13 @@
     "en": "Control your Dobiss home automation system from Gladys Assistant.",
     "fr": "Contrôlez votre système domotique Dobiss depuis Gladys Assistant."
   },
-  "version": "1.0.0",
-  "docker_image": "ghcr.io/ericboust/dobiss2gladys:1.0.0",
+  "version": "1.0.3",
+  "docker_image": "ghcr.io/ericboust/dobiss2gladys:1.0.3",
   "gladys_version": ">=4.86.0",
   "cover_image": "https://raw.githubusercontent.com/ericboust/dobiss2gladys/main/cover.jpg",
-  "categories": ["lighting"],
+  "categories": [
+    "lighting"
+  ],
   "config_schema": [
     {
       "key": "intro",
