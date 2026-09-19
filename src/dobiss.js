@@ -33,6 +33,13 @@ const ACTION_HEADER = Buffer.from([
 
 const STATUS_HEADER = Buffer.from([0xed, 0x63, 0x30, ...Array(11).fill(0xff), 0xaf, 0xaf]);
 
+// Message ajouté aux erreurs de timeout : certains outils Dobiss (Max-Touch,
+// MaxTool) prennent le contrôle exclusif de la connexion TCP au contrôleur.
+const BUSY_HINT =
+  "la centrale ne répond pas. Vérifie qu'aucune autre application (Max-Touch, MaxTool, un ancien connecteur) " +
+  "n'est déjà connectée : certains outils Dobiss (comme MaxTool) prennent le contrôle exclusif " +
+  "de la connexion et bloquent les autres clients tant qu'ils sont ouverts.";
+
 export const ACTION = {
   OFF: 0x00,
   ON: 0x01,
@@ -66,7 +73,7 @@ export function sendAction(host, port, moduleLetter, output, action, timeoutMs =
     };
 
     const timer = setTimeout(
-      () => finish(reject, new Error(`Timeout envoi commande vers ${host}:${port}`)),
+      () => finish(reject, new Error(`Timeout envoi commande vers ${host}:${port} — ${BUSY_HINT}`)),
       timeoutMs,
     );
 
@@ -113,7 +120,7 @@ export function readStatusBatch(host, port, items, timeoutMs = 3000) {
     };
 
     const timer = setTimeout(
-      () => finish(reject, new Error(`Timeout lecture état vers ${host}:${port}`)),
+      () => finish(reject, new Error(`Timeout lecture état vers ${host}:${port} — ${BUSY_HINT}`)),
       timeoutMs,
     );
 

@@ -1,0 +1,853 @@
+{
+  "installation": "Dobiss MAX200 - SX Evolution",
+  "port": 10001,
+  "protocol": "SX Evolution IP acties (adressage module = lettre ASCII A-R, sortie = index 0-based)",
+  "modules": [
+    {
+      "letter": "A",
+      "module_number": 1,
+      "sx_address_hex": "0x41",
+      "module_kind": "relay",
+      "has_complement": false,
+      "outputs": [
+        {
+          "nr": 1,
+          "index": 0,
+          "description": "Bureau ss mesure",
+          "group": "chauffage ss mesure",
+          "output_type": "relay"
+        },
+        {
+          "nr": 2,
+          "index": 1,
+          "description": "Chambre 1 elise",
+          "group": "chauffage",
+          "output_type": "relay"
+        },
+        {
+          "nr": 3,
+          "index": 2,
+          "description": "Chambre 2 studio ss mesure",
+          "group": "chauffage ss mesure",
+          "output_type": "relay"
+        },
+        {
+          "nr": 4,
+          "index": 3,
+          "description": "Chambre 3",
+          "group": "chauffage",
+          "output_type": "relay"
+        },
+        {
+          "nr": 5,
+          "index": 4,
+          "description": "Chambre 4",
+          "group": "chauffage",
+          "output_type": "relay"
+        },
+        {
+          "nr": 6,
+          "index": 5,
+          "description": "SDB enfants chauffage",
+          "group": "chauffage ss mesure",
+          "output_type": "relay"
+        },
+        {
+          "nr": 7,
+          "index": 6,
+          "description": "SDD ss mesure",
+          "group": "chauffage ss mesure",
+          "output_type": "relay"
+        },
+        {
+          "nr": 8,
+          "index": 7,
+          "description": "SDB Parents chauffage",
+          "group": "chauffage ss mesure",
+          "output_type": "relay"
+        }
+      ]
+    },
+    {
+      "letter": "B",
+      "module_number": 2,
+      "sx_address_hex": "0x42",
+      "module_kind": "relay",
+      "has_complement": true,
+      "outputs": [
+        {
+          "nr": 1,
+          "index": 0,
+          "description": "Cuisine",
+          "group": "chauffage",
+          "output_type": "relay"
+        },
+        {
+          "nr": 2,
+          "index": 1,
+          "description": "Hall ss mesure",
+          "group": "chauffage ss mesure",
+          "output_type": "relay"
+        },
+        {
+          "nr": 3,
+          "index": 2,
+          "description": "Salon",
+          "group": "chauffage",
+          "output_type": "relay"
+        },
+        {
+          "nr": 4,
+          "index": 3,
+          "description": "SDJ",
+          "group": "chauffage",
+          "output_type": "relay"
+        },
+        {
+          "nr": 5,
+          "index": 4,
+          "description": "B5",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 6,
+          "index": 5,
+          "description": "B6",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 7,
+          "index": 6,
+          "description": "B7",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 8,
+          "index": 7,
+          "description": "B8",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 9,
+          "index": 8,
+          "description": "Plan travail gauche",
+          "group": "Verbr binnen",
+          "output_type": "relay"
+        },
+        {
+          "nr": 10,
+          "index": 9,
+          "description": "Plan travail droite",
+          "group": "Verbr binnen",
+          "output_type": "relay"
+        },
+        {
+          "nr": 11,
+          "index": 10,
+          "description": "Abri jardin",
+          "group": "Verbr buiten",
+          "output_type": "relay"
+        },
+        {
+          "nr": 12,
+          "index": 11,
+          "description": "Bout jardin SO",
+          "group": "Verbr buiten",
+          "output_type": "relay"
+        }
+      ]
+    },
+    {
+      "letter": "C",
+      "module_number": 3,
+      "sx_address_hex": "0x43",
+      "module_kind": "relay",
+      "has_complement": true,
+      "outputs": [
+        {
+          "nr": 1,
+          "index": 0,
+          "description": "cuisine verreire",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 2,
+          "index": 1,
+          "description": "grenier",
+          "group": "Verl boven",
+          "output_type": "relay"
+        },
+        {
+          "nr": 3,
+          "index": 2,
+          "description": "mot verriere +",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 4,
+          "index": 3,
+          "description": "mot verriere -",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 5,
+          "index": 4,
+          "description": "ext garage palier",
+          "group": "Verl buiten",
+          "output_type": "relay"
+        },
+        {
+          "nr": 6,
+          "index": 5,
+          "description": "chambre par reseau",
+          "group": "prise reseau",
+          "output_type": "relay"
+        },
+        {
+          "nr": 7,
+          "index": 6,
+          "description": "chambre Pauline reseau",
+          "group": "prise reseau",
+          "output_type": "relay"
+        },
+        {
+          "nr": 8,
+          "index": 7,
+          "description": "chambre Mathieu reseau",
+          "group": "prise reseau",
+          "output_type": "relay"
+        },
+        {
+          "nr": 9,
+          "index": 8,
+          "description": "sdb parents prise",
+          "group": "Verbr binnen",
+          "output_type": "relay"
+        },
+        {
+          "nr": 10,
+          "index": 9,
+          "description": "chambre elise prise",
+          "group": "Verbr binnen",
+          "output_type": "relay"
+        },
+        {
+          "nr": 11,
+          "index": 10,
+          "description": "Chambre parents lit",
+          "group": "Verbr binnen",
+          "output_type": "relay"
+        },
+        {
+          "nr": 12,
+          "index": 11,
+          "description": "ext sous porche",
+          "group": "Verl buiten",
+          "output_type": "relay"
+        }
+      ]
+    },
+    {
+      "letter": "D",
+      "module_number": 4,
+      "sx_address_hex": "0x44",
+      "module_kind": "relay",
+      "has_complement": true,
+      "outputs": [
+        {
+          "nr": 1,
+          "index": 0,
+          "description": "hall etage",
+          "group": "Verl boven",
+          "output_type": "relay"
+        },
+        {
+          "nr": 2,
+          "index": 1,
+          "description": "chambre Pauline",
+          "group": "Verl boven",
+          "output_type": "relay"
+        },
+        {
+          "nr": 3,
+          "index": 2,
+          "description": "SDB enfants",
+          "group": "Verl boven",
+          "output_type": "relay"
+        },
+        {
+          "nr": 4,
+          "index": 3,
+          "description": "chambre Elise",
+          "group": "Verl boven",
+          "output_type": "relay"
+        },
+        {
+          "nr": 5,
+          "index": 4,
+          "description": "ext studio",
+          "group": "Verl buiten",
+          "output_type": "relay"
+        },
+        {
+          "nr": 6,
+          "index": 5,
+          "description": "chambre Mathieu",
+          "group": "Verl boven",
+          "output_type": "relay"
+        },
+        {
+          "nr": 7,
+          "index": 6,
+          "description": "SDD",
+          "group": "Verl boven",
+          "output_type": "relay"
+        },
+        {
+          "nr": 8,
+          "index": 7,
+          "description": "hall rez",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 9,
+          "index": 8,
+          "description": "D9",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 10,
+          "index": 9,
+          "description": "D10",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 11,
+          "index": 10,
+          "description": "D11",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 12,
+          "index": 11,
+          "description": "D12",
+          "group": "-",
+          "output_type": "relay"
+        }
+      ]
+    },
+    {
+      "letter": "E",
+      "module_number": 5,
+      "sx_address_hex": "0x45",
+      "module_kind": "relay",
+      "has_complement": true,
+      "outputs": [
+        {
+          "nr": 1,
+          "index": 0,
+          "description": "SDJ passage",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 2,
+          "index": 1,
+          "description": "chambre Elise reseau",
+          "group": "prise reseau",
+          "output_type": "relay"
+        },
+        {
+          "nr": 3,
+          "index": 2,
+          "description": "cuisine central",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 4,
+          "index": 3,
+          "description": "cuisine baldaquin",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 5,
+          "index": 4,
+          "description": "escalier cave haut",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 6,
+          "index": 5,
+          "description": "buanderie",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 7,
+          "index": 6,
+          "description": "WC",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 8,
+          "index": 7,
+          "description": "SDB Parents",
+          "group": "Verl boven",
+          "output_type": "relay"
+        },
+        {
+          "nr": 9,
+          "index": 8,
+          "description": "E9",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 10,
+          "index": 9,
+          "description": "E10",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 11,
+          "index": 10,
+          "description": "E11",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 12,
+          "index": 11,
+          "description": "E12",
+          "group": "-",
+          "output_type": "relay"
+        }
+      ]
+    },
+    {
+      "letter": "F",
+      "module_number": 6,
+      "sx_address_hex": "0x46",
+      "module_kind": "relay",
+      "has_complement": true,
+      "outputs": [
+        {
+          "nr": 1,
+          "index": 0,
+          "description": "Rampe acces garage",
+          "group": "Verl buiten",
+          "output_type": "relay"
+        },
+        {
+          "nr": 2,
+          "index": 1,
+          "description": "esc garage terrasse",
+          "group": "Verl buiten",
+          "output_type": "relay"
+        },
+        {
+          "nr": 3,
+          "index": 2,
+          "description": "F3",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 4,
+          "index": 3,
+          "description": "EXT BOUT JARDIN",
+          "group": "Verbr buiten",
+          "output_type": "relay"
+        },
+        {
+          "nr": 5,
+          "index": 4,
+          "description": "cuisine meuble",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 6,
+          "index": 5,
+          "description": "ext devant cuisine",
+          "group": "Verl buiten",
+          "output_type": "relay"
+        },
+        {
+          "nr": 7,
+          "index": 6,
+          "description": "exterieur terrase",
+          "group": "Verl buiten",
+          "output_type": "relay"
+        },
+        {
+          "nr": 8,
+          "index": 7,
+          "description": "PRISE cde ss tableau",
+          "group": "Verl buiten",
+          "output_type": "relay"
+        },
+        {
+          "nr": 9,
+          "index": 8,
+          "description": "sam au sol",
+          "group": "Verbr binnen",
+          "output_type": "relay"
+        },
+        {
+          "nr": 10,
+          "index": 9,
+          "description": "Machine a laver",
+          "group": "Verbr binnen",
+          "output_type": "relay"
+        },
+        {
+          "nr": 11,
+          "index": 10,
+          "description": "Sechoir",
+          "group": "Verbr binnen",
+          "output_type": "relay"
+        },
+        {
+          "nr": 12,
+          "index": 11,
+          "description": "Salon prise",
+          "group": "Verbr binnen",
+          "output_type": "relay"
+        }
+      ]
+    },
+    {
+      "letter": "G",
+      "module_number": 7,
+      "sx_address_hex": "0x47",
+      "module_kind": "relay",
+      "has_complement": true,
+      "outputs": [
+        {
+          "nr": 1,
+          "index": 0,
+          "description": "Garage",
+          "group": "Verl kelder",
+          "output_type": "relay"
+        },
+        {
+          "nr": 2,
+          "index": 1,
+          "description": "Bureau reseau",
+          "group": "prise reseau",
+          "output_type": "relay"
+        },
+        {
+          "nr": 3,
+          "index": 2,
+          "description": "cuisine reseau",
+          "group": "prise reseau",
+          "output_type": "relay"
+        },
+        {
+          "nr": 4,
+          "index": 3,
+          "description": "Atelier",
+          "group": "Verl kelder",
+          "output_type": "relay"
+        },
+        {
+          "nr": 5,
+          "index": 4,
+          "description": "Salon biblio prise cde",
+          "group": "prise reseau",
+          "output_type": "relay"
+        },
+        {
+          "nr": 6,
+          "index": 5,
+          "description": "SDJ reseau",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 7,
+          "index": 6,
+          "description": "cave coffre",
+          "group": "Verl kelder",
+          "output_type": "relay"
+        },
+        {
+          "nr": 8,
+          "index": 7,
+          "description": "cave frigo",
+          "group": "Verl kelder",
+          "output_type": "relay"
+        },
+        {
+          "nr": 9,
+          "index": 8,
+          "description": "porte garage papa",
+          "group": "Verbr binnen",
+          "output_type": "relay"
+        },
+        {
+          "nr": 10,
+          "index": 9,
+          "description": "G10",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 11,
+          "index": 10,
+          "description": "G11",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 12,
+          "index": 11,
+          "description": "G12",
+          "group": "-",
+          "output_type": "relay"
+        }
+      ]
+    },
+    {
+      "letter": "H",
+      "module_number": 8,
+      "sx_address_hex": "0x48",
+      "module_kind": "relay",
+      "has_complement": true,
+      "outputs": [
+        {
+          "nr": 1,
+          "index": 0,
+          "description": "Cave technique",
+          "group": "Verl kelder",
+          "output_type": "relay"
+        },
+        {
+          "nr": 2,
+          "index": 1,
+          "description": "H2",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 3,
+          "index": 2,
+          "description": "H3",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 4,
+          "index": 3,
+          "description": "H4",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 5,
+          "index": 4,
+          "description": "H5",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 6,
+          "index": 5,
+          "description": "H6",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 7,
+          "index": 6,
+          "description": "Salon TV Reseau",
+          "group": "prise reseau",
+          "output_type": "relay"
+        },
+        {
+          "nr": 8,
+          "index": 7,
+          "description": "H8",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 9,
+          "index": 8,
+          "description": "H9",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 10,
+          "index": 9,
+          "description": "H10",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 11,
+          "index": 10,
+          "description": "H11",
+          "group": "-",
+          "output_type": "relay"
+        },
+        {
+          "nr": 12,
+          "index": 11,
+          "description": "H12",
+          "group": "-",
+          "output_type": "relay"
+        }
+      ]
+    },
+    {
+      "letter": "I",
+      "module_number": 9,
+      "sx_address_hex": "0x49",
+      "module_kind": "ambiance",
+      "has_complement": false,
+      "outputs": [
+        {
+          "nr": 1,
+          "index": 0,
+          "description": "Chambre 4 dimmer",
+          "group": "Verl boven",
+          "output_type": "dimmer"
+        },
+        {
+          "nr": 2,
+          "index": 1,
+          "description": "Salon applique dim",
+          "group": "Verl beneden",
+          "output_type": "dimmer"
+        },
+        {
+          "nr": 3,
+          "index": 2,
+          "description": "biblio applique dim",
+          "group": "Verl beneden",
+          "output_type": "dimmer"
+        },
+        {
+          "nr": 4,
+          "index": 3,
+          "description": "bureau dim",
+          "group": "Verl beneden",
+          "output_type": "dimmer"
+        },
+        {
+          "nr": 5,
+          "index": 4,
+          "description": "terrasse ouest",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 6,
+          "index": 5,
+          "description": "porche entree",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 7,
+          "index": 6,
+          "description": "SDB parents meuble",
+          "group": "Verl boven",
+          "output_type": "relay"
+        },
+        {
+          "nr": 8,
+          "index": 7,
+          "description": "Dressing",
+          "group": "Verl boven",
+          "output_type": "relay"
+        }
+      ]
+    },
+    {
+      "letter": "J",
+      "module_number": 10,
+      "sx_address_hex": "0x4a",
+      "module_kind": "ambiance",
+      "has_complement": false,
+      "outputs": [
+        {
+          "nr": 1,
+          "index": 0,
+          "description": "sam dim",
+          "group": "Verl beneden",
+          "output_type": "dimmer"
+        },
+        {
+          "nr": 2,
+          "index": 1,
+          "description": "(non renseigne)",
+          "group": "Verl beneden",
+          "output_type": "dimmer"
+        },
+        {
+          "nr": 3,
+          "index": 2,
+          "description": "J3",
+          "group": "-",
+          "output_type": "dimmer"
+        },
+        {
+          "nr": 4,
+          "index": 3,
+          "description": "Salon dim",
+          "group": "Verl beneden",
+          "output_type": "dimmer"
+        },
+        {
+          "nr": 5,
+          "index": 4,
+          "description": "Debarras",
+          "group": "Verl boven",
+          "output_type": "relay"
+        },
+        {
+          "nr": 6,
+          "index": 5,
+          "description": "Sam dim sur relais",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 7,
+          "index": 6,
+          "description": "cuisine cam dim sur relais",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        },
+        {
+          "nr": 8,
+          "index": 7,
+          "description": "terrasse sud",
+          "group": "Verl beneden",
+          "output_type": "relay"
+        }
+      ]
+    }
+  ]
+}
