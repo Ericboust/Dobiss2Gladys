@@ -43,6 +43,11 @@ test('declaring catalog categories requires Gladys >= 4.86.0', () => {
   );
 });
 
+test('the manifest declares the local transport of the Dobiss controller', () => {
+  // The controller is reached on the local network (IP address + port).
+  assert.deepEqual(manifest.transports, ['local']);
+});
+
 test('config_schema defaults stay consistent with DEFAULT_CONFIG', () => {
   for (const field of manifest.config_schema) {
     if (field.default !== undefined) {
